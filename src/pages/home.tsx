@@ -3,10 +3,10 @@ import {
 	Focusable,
 	Navigation,
 	PanelSection,
-	PanelSectionRow,
-	Router,
+	PanelSectionRow
 } from "decky-frontend-lib"
 
+import badge from "../../assets/bestOnDeck-badge.png"
 import logo from "../../assets/sdhq-logo.png"
 import { GameReview, NewsItem } from "../sdhq-types"
 
@@ -14,9 +14,17 @@ type HomePageProps = {
 	review: GameReview | null | undefined
 	newsItems: NewsItem[]
 	setPage: (page: "home" | "review") => void
+	reviewItems: GameReview[] | null
+	appIsActive: boolean
 }
 
-export const HomePage = ({ review, newsItems, setPage }: HomePageProps) => (
+export const HomePage = ({
+	review,
+	newsItems,
+	setPage,
+	reviewItems,
+	appIsActive,
+}: HomePageProps) => (
 	<>
 		<>
 			<Focusable
@@ -29,22 +37,74 @@ export const HomePage = ({ review, newsItems, setPage }: HomePageProps) => (
 				</div>
 			</Focusable>
 
-			{review ? (
-				<PanelSection title={review.title.rendered}>
-					{review === undefined ? (
-						<i>Loading...</i>
-					) : review === null ? (
-						<span>No SDHQ Review</span>
+			{appIsActive ? (
+				<PanelSection
+					title={
+						review
+							? review.title.rendered
+							: "Loading Current Game..."
+					}
+				>
+					{!review ? (
+						<span>
+							{review === null
+								? "No SDHQ Review For Current Game"
+								: "Loading..."}
+						</span>
 					) : (
-						<ButtonItem
-							layout="below"
-							onClick={() => setPage("review")}
-						>
-							See Recommended Settings
-						</ButtonItem>
+						<div>
+							<ButtonItem
+								layout="below"
+								onClick={() => setPage("review")}
+							>
+								See Recommended Settings
+								{review.acf.best_on_deck ? (
+									<img
+										style={{
+											position: "absolute",
+											right: "-10px",
+											height: "25px",
+											width: "25px",
+											top: "-10px",
+											rotate: "-30deg",
+										}}
+										src={badge}
+									/>
+								) : null}
+							</ButtonItem>
+						</div>
 					)}
 				</PanelSection>
 			) : null}
+
+			<PanelSection title="Latest Reviews">
+				{reviewItems !== null ? (
+					<>
+						{reviewItems.map((gameReview) => (
+							<ButtonItem
+								layout="below"
+								onClick={() =>
+									Navigation.NavigateToExternalWeb(
+										gameReview.link
+									)
+								}
+							>
+								{gameReview.title.rendered}
+							</ButtonItem>
+						))}
+					</>
+				) : null}
+				<ButtonItem
+					layout="below"
+					onClick={() =>
+						Navigation.NavigateToExternalWeb(
+							"https://steamdeckhq.com/game-settings/"
+						)
+					}
+				>
+					<i>All Reviews...</i>
+				</ButtonItem>
+			</PanelSection>
 
 			<PanelSection title="Latest News">
 				{newsItems.length === 0 ? (

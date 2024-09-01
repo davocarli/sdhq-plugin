@@ -1,6 +1,8 @@
-import { ButtonItem, Focusable, Navigation, PanelSection } from "decky-frontend-lib"
+import { ButtonItem, Navigation, PanelSection } from "decky-frontend-lib"
+import parse from "html-react-parser"
 import { useEffect } from "react"
 
+import { Scrollable, scrollableRef, ScrollArea } from "../components/scrollable"
 import { GameReview } from "../sdhq-types"
 
 type ReviewPageProps = {
@@ -27,6 +29,7 @@ const SDHQSetting = ({
 			color: "white",
 			margin: "2px",
 			padding: "1rem",
+			whiteSpace: "pre-wrap",
 		}}
 	>
 		{!titleTop ? <h3 style={{ margin: "0px" }}>{value}</h3> : null}
@@ -36,24 +39,19 @@ const SDHQSetting = ({
 )
 
 export const ReviewPage = ({ review, setPage }: ReviewPageProps) => {
+	const ref = scrollableRef()
 	useEffect(() => {
 		console.log(review)
-		console.log(typeof review)
+		// console.log(typeof review)
 	}, [])
 	return (
-		<>
+		<Scrollable ref={ref} scrollSpeed={100}>
 			<PanelSection title={review.title.rendered}>
 				<ButtonItem layout="inline" onClick={() => setPage("home")}>
 					Go Home
 				</ButtonItem>
 			</PanelSection>
-			<Focusable
-				// @ts-ignore
-				focusableIfNoChildren={true}
-				focusable={true}
-				onGamepadFocus={() => {}}
-				onFocus={() => {}}
-			>
+			<ScrollArea scrollable={ref}>
 				<PanelSection title="SteamOS">
 					<div style={{ grid: "1", columns: "2" }}>
 						<SDHQSetting
@@ -104,14 +102,6 @@ export const ReviewPage = ({ review, setPage }: ReviewPageProps) => {
 						/>
 					</div>
 				</PanelSection>
-			</Focusable>
-			<Focusable
-				// @ts-ignore
-				focusableIfNoChildren={true}
-				focusable={true}
-				onGamepadFocus={() => {}}
-				onFocus={() => {}}
-			>
 				<PanelSection title="Proton Version">
 					<SDHQSetting
 						value={
@@ -121,31 +111,17 @@ export const ReviewPage = ({ review, setPage }: ReviewPageProps) => {
 						title=""
 					/>
 				</PanelSection>
-			</Focusable>
-			<Focusable
-				// @ts-ignore
-				focusableIfNoChildren={true}
-				focusable={true}
-				onGamepadFocus={() => {}}
-				onFocus={() => {}}
-			>
 				<PanelSection title="Game Settings">
 					<SDHQSetting
-						value={
-							review.acf.optimized_and_recommended_settings
-								.game_settings
-						}
+						value={parse(
+							review.acf.optimized_and_recommended_settings.game_settings.replace(
+								/<strong/g,
+								'<strong style="font-weight: bolder"'
+							)
+						)}
 						title=""
 					/>
 				</PanelSection>
-			</Focusable>
-			<Focusable
-				// @ts-ignore
-				focusableIfNoChildren={true}
-				focusable={true}
-				onGamepadFocus={() => {}}
-				onFocus={() => {}}
-			>
 				<PanelSection title="Projected Battery Usage and Temp">
 					<SDHQSetting
 						value={
@@ -171,7 +147,7 @@ export const ReviewPage = ({ review, setPage }: ReviewPageProps) => {
 						title="Gameplay Time"
 					/>
 				</PanelSection>
-			</Focusable>
+			</ScrollArea>
 			<PanelSection title="Review">
 				<ButtonItem
 					layout="below"
@@ -182,6 +158,6 @@ export const ReviewPage = ({ review, setPage }: ReviewPageProps) => {
 					Read Full Review
 				</ButtonItem>
 			</PanelSection>
-		</>
+		</Scrollable>
 	)
 }
