@@ -1,10 +1,10 @@
 {
 	"name": "Steam Deck HQ",
 	"author": "davocarli",
-	"flags": ["debug"],
+	"flags": [],
 	"publish": {
 		"tags": ["sdhq"],
-		"description": "Steam Deck HQ Plugin.",
+		"description": "Official plugin from Steam Deck HQ. Allows you to browse game reviews and recommended settings.",
 		"image": "https://opengraph.githubassets.com/1/SteamDeckHomebrew/PluginLoader"
 	}
 }
