@@ -1,6 +1,6 @@
 {
 	"name": "sdhq",
-	"version": "0.0.5",
+	"version": "1.0",
 	"description": "A plugin for browsing Steam Deck HQ content",
 	"scripts": {
 		"build": "shx rm -rf dist && rollup -c",
